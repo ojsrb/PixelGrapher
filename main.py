@@ -1,7 +1,7 @@
 #Config
 
 resolution = 100
-frameRate = 10
+frameRate = 30
 
 
 import math
@@ -53,12 +53,12 @@ def horizontal(y):
     for i in range(resolution):
         set(i, y, 1)
 
-def line(slope, intercept=0):
+def line(slope, intercept=0, color=1):
     for i in range(resolution):
         y = resolution - math.floor(i * round(slope, 4)) - intercept
         if y < 0:
             return
-        set(i, y, 1)
+        set(i, y, color)
 
 while True:
     for event in pygame.event.get():
@@ -70,13 +70,16 @@ while True:
 
     #Animations and drawings
 
-    line(8)
-    line(4)
-    line(2)
-    line(1)
-    line(1/2)
-    line(1/4)
-    line(1/8)
+    clear()
+
+    line(8, color=2)
+    line(4, color=3)
+    line(2, color=4)
+    line(1, color=5)
+    line(1/2, color=6)
+    line(1/4, color=2)
+    line(1/8, color=3)
+
 
     #END ANIMATIONS
 
@@ -87,7 +90,21 @@ while True:
             if row[j] < 0:
                 pygame.draw.circle(screen, (0, 0, 0), [i * radius * 2 + radius, j * radius * 2 + radius], radius)
             else:
-                pygame.draw.circle(screen, (255, 255, 255), [i * radius * 2 + radius, j * radius * 2 + radius], radius)
+                color = (255, 255, 255)
+                if row[j] == 1:
+                    color = (255, 255, 255)
+                elif row[j] == 2:
+                    color = (255, 50, 50)
+                elif row[j] == 3:
+                    color = (255, 255, 50)
+                elif row[j] == 4:
+                    color = (50, 255, 50)
+                elif row[j] == 5:
+                    color = (50, 255, 255)
+                elif row[j] == 6:
+                    color = (50, 50, 255)
+                pygame.draw.circle(screen, color, [i * radius * 2 + radius, j * radius * 2 + radius], radius)
+
 
 
     pygame.display.update()
