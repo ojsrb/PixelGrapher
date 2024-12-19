@@ -13,7 +13,7 @@ fr = 10
 
 counter = 1
 continuous = 1
-backandforth = 1
+bounce = 1
 change = 1
 
 dots = []
@@ -25,34 +25,34 @@ radius = 0
 clock = 0
 
 def set(x, y, val):
-    global dots, backandforth, counter, continuous, change, res, fr
+    global dots, bounce, counter, continuous, change, res, fr
     try:
         dots[x][y] = val
     except:
         pass
 
 def get(x, y):
-    global dots, backandforth, counter, continuous, change, res, fr
+    global dots, bounce, counter, continuous, change, res, fr
     return dots[x][y]
 
 def clear():
-    global dots, backandforth, counter, continuous, change, res, fr
+    global dots, bounce, counter, continuous, change, res, fr
     for i in range(0, res):
         for j in range(res):
             dots[i][j] = -1
 
-def vertical(x, min=0, max=200):
-    global dots, backandforth, counter, continuous, change, res, fr
+def vertical(x, min=0, max=200, color=1):
+    global dots, bounce, counter, continuous, change, res, fr
     for i in range(min, max):
-        set(x, i, 1)
+        set(x, i, color)
 
-def horizontal(y, min=0, max=200):
-    global dots, backandforth, counter, continuous, change, res, fr
+def horizontal(y, min=0, max=200, color=1):
+    global dots, bounce, counter, continuous, change, res, fr
     for i in range(min, max):
-        set(i, y, 1)
+        set(i, y, color)
 
 def line(slope, intercept=0, color=1, min=0, max=200):
-    global dots, backandforth, counter, continuous, change, res, fr
+    global dots, bounce, counter, continuous, change, res, fr
     for i in range(min, max):
         y = res - math.floor(i * round(slope, 4)) - intercept
         if y < 0:
@@ -60,12 +60,21 @@ def line(slope, intercept=0, color=1, min=0, max=200):
         set(i, y, color)
 
 def rect(x, y, w, h, color=1):
-    global dots, backandforth, counter, continuous, change, res, fr
-    for i in range(x, x+w):
-        vertical(i, min=y, max=y+h)
+    global dots, bounce, counter, continuous, change, res, fr
+    for i in range(x, round(x+w)):
+        vertical(i, min=y, max=round(y+h), color=color)
+
+def triangle(x, y, w, color=1):
+    global dots, bounce, counter, continuous, change, res, fr
+    y -= 1
+    y -= w
+    w += 1
+    w = round(w)
+    for i in range(0, w):
+        horizontal(i + y, min=x, max=x+i, color=color)
 
 def init(resolution, width, framerate):
-    global dots, backandforth, counter, continuous, change, res, fr, screen, radius, clock
+    global dots, bounce, counter, continuous, change, res, fr, screen, radius, clock
 
     res = resolution
     fr = framerate
@@ -92,7 +101,7 @@ def init(resolution, width, framerate):
 
 
 def update():
-    global dots, backandforth, counter, continuous, change, res, fr, screen, clock, radius
+    global dots, bounce, counter, continuous, change, res, fr, screen, clock, radius
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -131,14 +140,14 @@ def update():
 
     continuous += 1
 
-    backandforth += change
+    bounce += change
 
-    if backandforth > res:
+    if bounce > res:
         change = -1
-        backandforth = res
-    elif backandforth < 1:
+        bounce = res
+    elif bounce < 1:
         change = 1
-        backandforth = 1
+        bounce = 1
 
     clock.tick(fr)
 
